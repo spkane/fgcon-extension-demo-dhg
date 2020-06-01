@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<!-- 
-  Please see the license.html file included with this distribution for 
-  attribution and copyright information.
--->
-
 <root>
+	<!-- Note: it is important to put merge="join" here so it will know to merge. -->
 	<windowclass name="charsheet_notes_contents" merge="join">
 		<sheetdata>
-			
+			<!-- metalplate is the brown plate in 5e. you can search for it. -->
 			<metalplate name="clantitle">
 				<anchored height="20">
 					<top parent="columnanchor" anchor="bottom" relation="relative" offset="10" />
@@ -20,6 +16,7 @@
 				<anchored to="clantitle" position="insidetopleft" offset="0,25" width="130" height="20"/>
 			</stringu>
 			<title_cycler name="title">
+				<!-- I personally would save it in here, because many editor have lua and xml tools <script file="campaign/scripts/titleSelector.lua" name="titleSelector"/>-->
 				<script>
 					function onValueChanged()
 						--[[ Comments and some modifications by YouTube user: frostbyte000jm ]]
@@ -114,21 +111,6 @@
 						else
 							--[[ Debug: Show which title we're updating. ]]
 							Debug.console("title: Default. Do Nothing.");
-							--[[ Remove Old Title Bonus ]]
-							curStrength = curStrength+1;
-							curDexterity = curDexterity;
-							curConstitution = curConstitution;
-							curIntelligence = curIntelligence;
-							curWisdom = curWisdom-1;
-							curCharisma = curCharisma-1;
-							--[[ Add New Title Bonus ]]
-							newStrength = curStrength;
-							newDexterity = curDexterity;
-							newConstitution = curConstitution;
-							newIntelligence = curIntelligence;
-							newWisdom = curWisdom;
-							newCharisma = curCharisma;
-							doChangeStats = true;
 						end
 						if doChangeStats == true then
 							--[[ Debug: Check what is loaded. ]]
@@ -144,7 +126,11 @@
 							--[[ Check the correct values got loaded. ]]
 							Debug.console("stats: ", DB.getValue(nodeWin, "abilities.strength.score"),", ", DB.getValue(nodeWin, "abilities.dexterity.score"),", ", DB.getValue(nodeWin, "abilities.constitution.score"),", ", DB.getValue(nodeWin, "abilities.intelligence.score"), ", ", DB.getValue(nodeWin, "abilities.wisdom.score"), ", ", DB.getValue(nodeWin, "abilities.charisma.score")); Debug.console("stats total: ", DB.getValue(nodeWin, "abilities.strength.score")+DB.getValue(nodeWin, "abilities.dexterity.score")+DB.getValue(nodeWin, "abilities.constitution.score")+DB.getValue(nodeWin, "abilities.intelligence.score")+DB.getValue(nodeWin, "abilities.wisdom.score")+DB.getValue(nodeWin, "abilities.charisma.score"));
 							--[[ Send message to chat window. BTW: .. is LUA's way to concat. ]]
-							msg.text = rActor.sName .. " is now a " .. sTitle .. " with new stats of " .. DB.getValue(nodeWin, "abilities.strength.score")..", "..DB.getValue(nodeWin, "abilities.dexterity.score")..", "..DB.getValue(nodeWin, "abilities.constitution.score")..", "..DB.getValue(nodeWin, "abilities.intelligence.score")..", "..DB.getValue(nodeWin, "abilities.wisdom.score")..", "..DB.getValue(nodeWin, "abilities.charisma.score");
+							if (sTitle == "" or sTitle == "None") then
+								msg.text = rActor.sName .. " is now a standard character with new stats of " .. DB.getValue(nodeWin, "abilities.strength.score")..", "..DB.getValue(nodeWin, "abilities.dexterity.score")..", "..DB.getValue(nodeWin, "abilities.constitution.score")..", "..DB.getValue(nodeWin, "abilities.intelligence.score")..", "..DB.getValue(nodeWin, "abilities.wisdom.score")..", "..DB.getValue(nodeWin, "abilities.charisma.score");
+							else
+								msg.text = rActor.sName .. " is now a " .. sTitle .. " with new stats of " .. DB.getValue(nodeWin, "abilities.strength.score")..", "..DB.getValue(nodeWin, "abilities.dexterity.score")..", "..DB.getValue(nodeWin, "abilities.constitution.score")..", "..DB.getValue(nodeWin, "abilities.intelligence.score")..", "..DB.getValue(nodeWin, "abilities.wisdom.score")..", "..DB.getValue(nodeWin, "abilities.charisma.score");
+							end
 							Comm.deliverChatMessage(msg);
 						end
 					end
