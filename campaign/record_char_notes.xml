@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- 
+  Please see the license.html file included with this distribution for 
+  attribution and copyright information.
+-->
+
+<root>
+	<windowclass name="charsheet_notes_contents" merge="join">
+		<sheetdata>
+			
+			<metalplate name="clantitle">
+				<anchored height="20">
+					<top parent="columnanchor" anchor="bottom" relation="relative" offset="10" />
+					<left offset="15" />
+					<right offset="-10" />
+				</anchored>
+			</metalplate>
+			<stringu name="clan">
+				<anchored to="clantitle" position="insidetopleft" offset="0,25" width="130" height="20"/>
+			</stringu>
+			<title_cycler name="title">
+				<script>
+					function onValueChanged()
+						--[[ Comments and some modifications by YouTube user: frostbyte000jm ]]
+						--[[ Declarations ]]
+						local sTitle = getValue();
+						local nodeWin = window.getDatabaseNode();
+						local rActor = ActorManager.getActor("pc", window.getDatabaseNode());
+						local newStrength, newDexterity, newConstitution, newIntelligence, newWisdom, newCharisma;
+						local msg = {font = "msgfont"};
+						local doChangeStats;
+						--[[ Set initial Values (These are also Declarations) ]]
+						local curStrength = DB.getValue(nodeWin, "abilities.strength.score");
+						local curDexterity = DB.getValue(nodeWin, "abilities.dexterity.score");
+						local curConstitution = DB.getValue(nodeWin, "abilities.constitution.score");
+						local curIntelligence = DB.getValue(nodeWin, "abilities.intelligence.score");
+						local curWisdom = DB.getValue(nodeWin, "abilities.wisdom.score");
+						local curCharisma = DB.getValue(nodeWin, "abilities.charisma.score");
+						--[[ Debug: local values that have just been set. ]]
+						Debug.console("title_cycler active", sTitle);
+						Debug.console("nodeWin: ",nodeWin);
+						Debug.console("rActor: ",rActor);
+						Debug.console("stats (from Node): ", DB.getValue(nodeWin, "abilities.strength.score"),", ", DB.getValue(nodeWin, "abilities.dexterity.score"),", ", DB.getValue(nodeWin, "abilities.constitution.score"),", ", DB.getValue(nodeWin, "abilities.intelligence.score"), ", ", DB.getValue(nodeWin, "abilities.wisdom.score"), ", ", DB.getValue(nodeWin, "abilities.charisma.score"));
+						Debug.console("stats total(from Node): ", DB.getValue(nodeWin, "abilities.strength.score")+DB.getValue(nodeWin, "abilities.dexterity.score")+DB.getValue(nodeWin, "abilities.constitution.score")+DB.getValue(nodeWin, "abilities.intelligence.score")+DB.getValue(nodeWin, "abilities.wisdom.score")+DB.getValue(nodeWin, "abilities.charisma.score"));
+						Debug.console("stats (local Names): ", curStrength,", ", curDexterity,", ", curConstitution,", ", curIntelligence,", ", curWisdom,", ", curCharisma);
+						Debug.console("stats total (local Names): ", (curStrength+curDexterity+curConstitution+curIntelligence+curWisdom+curCharisma));
+						--[[ Prep new scores based on choice and +/- values to correct stats. ]]
+						--[[ Order of cycler: Shaman|Warleader|Counselor|None ]]
+						if sTitle == "Shaman" then
+							--[[ Debug: Show which title we're updating. ]]
+							Debug.console("title: Shaman");
+							--[[ Add New Title Bonus ]] newStrength = curStrength-1;
+							newDexterity = curDexterity;
+							newConstitution = curConstitution;
+							newIntelligence = curIntelligence;
+							newWisdom = curWisdom+1;
+							newCharisma = curCharisma+1;
+							doChangeStats = true;
+						elseif sTitle == "Warleader" then
+							--[[ Debug: Show which title we're updating. ]]
+							Debug.console("title: Warleader");
+							--[[ Remove Old Title Bonus ]]
+							curStrength = curStrength+1;
+							curDexterity = curDexterity;
+							curConstitution = curConstitution;
+							curIntelligence = curIntelligence;
+							curWisdom = curWisdom-1;
+							curCharisma = curCharisma-1;
+							--[[ Add New Title Bonus ]]
+							newStrength = curStrength+2;
+							newDexterity = curDexterity;
+							newConstitution = curConstitution;
+							newIntelligence = curIntelligence;
+							newWisdom = curWisdom-2;
+							newCharisma = curCharisma+1;
+							doChangeStats = true;
+						elseif sTitle == "Counsellor" then
+							--[[ Debug: Show which title we're updating. ]]
+							Debug.console("title: Counsellor");
+							--[[ Remove Old Title Bonus ]]
+							curStrength = curStrength-2;
+							curDexterity = curDexterity;
+							curConstitution = curConstitution;
+							curIntelligence = curIntelligence;
+							curWisdom = curWisdom+2;
+							curCharisma = curCharisma-1;
+							--[[ Add New Title Bonus ]]
+							newStrength = curStrength-1;
+							newDexterity = curDexterity;
+							newConstitution = curConstitution;
+							newIntelligence = curIntelligence;
+							newWisdom = curWisdom+1;
+							newCharisma = curCharisma+1;
+							doChangeStats = true;
+						elseif sTitle == "None" then
+							--[[ Debug: Show which title we're updating. ]]
+							Debug.console("title: None");
+							--[[ Remove Old Title Bonus ]]
+							curStrength = curStrength+1;
+							curDexterity = curDexterity;
+							curConstitution = curConstitution;
+							curIntelligence = curIntelligence;
+							curWisdom = curWisdom-1;
+							curCharisma = curCharisma-1;
+							--[[ Add New Title Bonus ]]
+							newStrength = curStrength;
+							newDexterity = curDexterity;
+							newConstitution = curConstitution;
+							newIntelligence = curIntelligence;
+							newWisdom = curWisdom;
+							newCharisma = curCharisma;
+							doChangeStats = true;
+						else
+							--[[ Debug: Show which title we're updating. ]]
+							Debug.console("title: Default. Do Nothing.");
+							--[[ Remove Old Title Bonus ]]
+							curStrength = curStrength+1;
+							curDexterity = curDexterity;
+							curConstitution = curConstitution;
+							curIntelligence = curIntelligence;
+							curWisdom = curWisdom-1;
+							curCharisma = curCharisma-1;
+							--[[ Add New Title Bonus ]]
+							newStrength = curStrength;
+							newDexterity = curDexterity;
+							newConstitution = curConstitution;
+							newIntelligence = curIntelligence;
+							newWisdom = curWisdom;
+							newCharisma = curCharisma;
+							doChangeStats = true;
+						end
+						if doChangeStats == true then
+							--[[ Debug: Check what is loaded. ]]
+							Debug.console("stats(var): ", newStrength,", ", newDexterity,", ", newConstitution,", ", newIntelligence,", ", newWisdom,", ", newCharisma);
+							Debug.console("stats total: ", (newStrength+newDexterity+newConstitution+newIntelligence+newWisdom+newCharisma));
+							--[[ Set new Scores ]]
+							DB.setValue(nodeWin, "abilities.strength.score", "number", newStrength);
+							DB.setValue(nodeWin, "abilities.dexterity.score", "number", newDexterity);
+							DB.setValue(nodeWin, "abilities.constitution.score", "number", newConstitution);
+							DB.setValue(nodeWin, "abilities.intelligence.score", "number", newIntelligence);
+							DB.setValue(nodeWin, "abilities.wisdom.score", "number", newWisdom);
+							DB.setValue(nodeWin, "abilities.charisma.score", "number", newCharisma);
+							--[[ Check the correct values got loaded. ]]
+							Debug.console("stats: ", DB.getValue(nodeWin, "abilities.strength.score"),", ", DB.getValue(nodeWin, "abilities.dexterity.score"),", ", DB.getValue(nodeWin, "abilities.constitution.score"),", ", DB.getValue(nodeWin, "abilities.intelligence.score"), ", ", DB.getValue(nodeWin, "abilities.wisdom.score"), ", ", DB.getValue(nodeWin, "abilities.charisma.score")); Debug.console("stats total: ", DB.getValue(nodeWin, "abilities.strength.score")+DB.getValue(nodeWin, "abilities.dexterity.score")+DB.getValue(nodeWin, "abilities.constitution.score")+DB.getValue(nodeWin, "abilities.intelligence.score")+DB.getValue(nodeWin, "abilities.wisdom.score")+DB.getValue(nodeWin, "abilities.charisma.score"));
+							--[[ Send message to chat window. BTW: .. is LUA's way to concat. ]]
+							msg.text = rActor.sName .. " is now a " .. sTitle .. " with new stats of " .. DB.getValue(nodeWin, "abilities.strength.score")..", "..DB.getValue(nodeWin, "abilities.dexterity.score")..", "..DB.getValue(nodeWin, "abilities.constitution.score")..", "..DB.getValue(nodeWin, "abilities.intelligence.score")..", "..DB.getValue(nodeWin, "abilities.wisdom.score")..", "..DB.getValue(nodeWin, "abilities.charisma.score");
+							Comm.deliverChatMessage(msg);
+						end
+					end
+				</script>
+				<anchored to="clan" position="righthigh" offset="15,0" width="130" height="20" />
+			</title_cycler>
+			<stringu name="liege">
+				<anchored to="title" position="righthigh" offset="15,0" width="130" height="20" />
+			</stringu>
+			<label_charfieldtop>
+				<anchored to="clan" offset="0,5" />
+				<static textres="char_label_clan" />
+			</label_charfieldtop>
+			<label_charfieldtop>
+				<anchored to="title" offset="0,5" />
+				<static textres="char_label_title" />
+			</label_charfieldtop>
+			<label_charfieldtop>
+				<anchored to="liege" offset="0,5" />
+				<static textres="char_label_liege" />
+			</label_charfieldtop>
+
+		</sheetdata>
+	</windowclass>
+</root>

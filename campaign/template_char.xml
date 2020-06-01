@@ -1,0 +1,12 @@
+<root>
+    <template name="title_cycler">
+        <button_stringcycler>
+            <parameters>
+                <labelsres>char_label_shaman|char_label_warleader|char_label_counsel|char_label_none</labelsres>
+                <values>Shaman|Warleader|Counsellor|None</values>
+                <initialvalue>Choose</initialvalue>
+                <defaultlabelres>char_label_choose</defaultlabelres>
+            </parameters>
+        </button_stringcycler>
+    </template>
+</root>
